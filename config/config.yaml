@@ -1,0 +1,8 @@
+url: "http://drkk.local/myFirst/hs/access/"
+username: "admin"
+password: ""
+timeout: 5s #♊ предложил 10
+
+# Для wsl создал правило в брандмауэре (ps admin)
+# New-NetFirewallRule -DisplayName "Allow WSL to 1C" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 80
+# 	Так получает и из ps и wsl
