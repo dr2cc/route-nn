@@ -2,22 +2,23 @@ package app
 
 import (
 	"fmt"
+	"log"
 	"route-nn/internal/client"
 	"route-nn/internal/config"
 )
 
 func Run(cfg *config.Config) error {
-	// 1. Используем ваш конструктор
 	apiClient := client.NewClient(cfg)
 
-	// 2. Вызываем метод (BOM и авторизация уже внутри)
+	// call GetJSON method
 	var result map[string]interface{}
 	if err := apiClient.GetJSON(cfg.Url, &result); err != nil {
-		return err // или log.Fatalf
+		// return err // или log.Fatalf
+		log.Fatalf("GetJSON error: %s", err)
 	}
 
-	// 3. Вывод
-	fmt.Println("Данные успешно получены:")
+	// output
+	// fmt.Println("Данные успешно получены:")
 	for key, value := range result {
 		fmt.Printf("%s: %v\n", key, value)
 	}

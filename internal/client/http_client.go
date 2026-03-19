@@ -17,8 +17,10 @@ type Client struct {
 func NewClient(cfg *config.Config) *Client {
 	return &Client{
 		HTTPClient: resty.New().
-			SetTimeout(cfg.Timeout*time.Second).
-			SetBasicAuth(cfg.Username, cfg.Password),
+			SetTimeout(time.Duration(cfg.Timeout)*time.Second).
+			SetBasicAuth(cfg.Username, cfg.Password).
+			// Отключает все предупреждения, включая "Insecure Basic Auth"
+			SetDisableWarn(true),
 	}
 }
 
