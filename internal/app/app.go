@@ -2,11 +2,18 @@ package app
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"route-nn/internal/client"
 	"route-nn/internal/config"
-	"text/template"
+	"route-nn/internal/delivery/html"
 )
+
+// // Вшиваем папку templates прямо в бинарник.
+// // Директива должна быть ровно над переменной.
+// //
+// //go:embed route-nn/internal/delivery/html/templates/index.html
+// var templateFS embed.FS
 
 // Структура для передачи данных в HTML-шаблон
 type PageData struct {
@@ -16,7 +23,16 @@ type PageData struct {
 // Run #3 with
 func Run(cfg *config.Config) error {
 	apiClient := client.NewClient(cfg)
-	tmpl := template.Must(template.ParseFiles("templates/index.html"))
+
+	tmpl := template.Must(template.ParseFS(html.Files, "templates/index.html"))
+
+	// // Используем ParseFS вместо ParseFiles
+	// tmpl, err := template.ParseFS(templateFS, "templates/index.html")
+	// if err != nil {
+	// 	return fmt.Errorf("ошибка загрузки вшитого шаблона: %w", err)
+	// }
+
+	// tmpl := template.Must(template.ParseFiles("templates/index.html"))
 
 	// 1. Отображение главной страницы
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -45,11 +61,11 @@ func Run(cfg *config.Config) error {
 
 		// ВАЖНО: Здесь проводим "сложные вычисления" на стороне Go
 		// Для примера просто выведем полученные ключи
-		calculationResult := fmt.Sprintf("Обработано для %s и %s на дату %s\nДанные 1С: %v",
+		calcRes := fmt.Sprintf("Обработано для %s и %s на дату %s\nДанные 1С: %v",
 			code1, code2, date, apiData)
 
 		// Возвращаем результат на экран
-		tmpl.Execute(w, PageData{Result: calculationResult})
+		tmpl.Execute(w, PageData{Result: calcRes})
 	})
 
 	fmt.Println("Сервер запущен на http://localhost:8080")
