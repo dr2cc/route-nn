@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>routeNN - Расчет процентов</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        .container { max-width: 500px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; }
+        input { width: 100%; padding: 8px; margin-top: 5px; }
+        button { padding: 10px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .result { margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Система routeNN</h1>
+        <form method="POST" action="/calculate">
+            <div class="form-group">
+                <label>Код 1:</label>
+                <input type="text" name="code1" required>
+            </div>
+            <div class="form-group">
+                <label>Код 2:</label>
+                <input type="text" name="code2" required>
+            </div>
+            <div class="form-group">
+                <label>Дата:</label>
+                <input type="date" name="date" required>
+            </div>
+            <button type="submit">Рассчитать</button>
+        </form>
+
+        {{if .Result}}
+        <div class="result">
+            <h3>Результат расчета:</h3>
+            <pre>{{.Result}}</pre>
+        </div>
+        {{end}}
+    </div>
+</body>
+</html>
