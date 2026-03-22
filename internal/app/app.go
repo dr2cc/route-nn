@@ -69,7 +69,7 @@ func Run(cfg *config.Config) error {
 	})
 
 	fmt.Println("Сервер запущен на http://localhost:8080")
-	return http.ListenAndServe(":8080", nil)
+	return http.ListenAndServe("localhost:8080", nil)
 }
 
 // // Run #2 with *resty.Client
