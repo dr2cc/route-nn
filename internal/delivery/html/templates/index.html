@@ -2,13 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+     <!-- Название вкладки в браузере -->
     <title>routeNN - Расчет процентов</title>
     <style>
+        /* Общие стили для страницы */
         body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        /* Ограничиваем ширину формы, чтобы она не растягивалась на весь экран */
         .container { max-width: 500px; }
+        /* Стилизация полей ввода для удобства (Bootstrap-style) */
         .form-group { margin-bottom: 15px; }
         label { display: block; }
-        input { width: 100%; padding: 8px; margin-top: 5px; }
+        input { 
+            width: 100%; padding: 8px; margin-top: 5px; 
+            /* НОВОЕ */
+            border: 1px solid #ccc; 
+            border-radius: 4px;
+            /* Важно: добавляем box-sizing, чтобы padding не "раздувал" инпут шире контейнера */
+            box-sizing: border-box;
+        }
         button { padding: 10px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
         .result { margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 5px; }
     </style>
