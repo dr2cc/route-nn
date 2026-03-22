@@ -20,32 +20,63 @@
             /* Важно: добавляем box-sizing, чтобы padding не "раздувал" инпут шире контейнера */
             box-sizing: border-box;
         }
-        button { padding: 10px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
-        .result { margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 5px; }
+        /* Стили кнопки: синий цвет и изменение курсора */
+        button { 
+            padding: 10px 15px; background: #007bff; color: white; border: none; cursor: pointer; 
+        /* 22.03.26 */
+            font-size: 16px;
+        }
+        /* Эффект при наведении */
+        button:hover { background: #0056b3; } 
+        /* Блок вывода: серый фон помогает визуально отделить итог от формы */
+        .result { 
+            margin-top: 20px; padding: 15px; background: #e9ecef; 
+            border-left: 5px solid #007bff; /* Акцентная линия слева */
+            border-radius: 5px; 
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Система routeNN</h1>
+        <!-- 
+            method="POST": данные отправляются в теле запроса (безопаснее и стандарт для расчетов).
+            action="/calculate": URL обработчика в вашем Go-коде (http.HandleFunc).
+        -->
         <form method="POST" action="/calculate">
             <div class="form-group">
-                <label>Код 1:</label>
+                <label>Код контрагента:</label>
+                <!-- name="code1": по этому ключу получим данные в Go (пока в app.Run): code1 := r.FormValue("code1") -->
                 <input type="text" name="code1" required>
             </div>
             <div class="form-group">
-                <label>Код 2:</label>
+                <label>Код договора:</label>
+                <!-- name="code2": по этому ключу получим данные в Go (пока в app.Run): code2 := r.FormValue("code2") -->
                 <input type="text" name="code2" required>
             </div>
             <div class="form-group">
-                <label>Дата:</label>
-                <input type="date" name="date" required>
+                <label>Дата рассчета долга:</label>
+                <!-- name="date": по этому ключу получим данные в Go (пока в app.Run): date := r.FormValue("date") -->
+                <!-- <input type="date" name="date" required> -->
+                 <!-- Добавили value="{{.CurrentDate}}", чтобы подставить дату из Go -->
+                <input type="date" name="date" value="{{.CurrentDate}}" required>
             </div>
             <button type="submit">Рассчитать</button>
         </form>
 
+        {{/* 
+            Это комментарий самого движка Go. Здесь можно использовать {{ ... }} 
+            Такой комментарий не попадет в браузер и не сломает рендеринг. 
+            ЛОГИКА GO TEMPLATE:
+            {{if .Result}} проверяет, не пустое ли поле Result в структуре, переданной в шаблон.
+            Если данных нет (например, при первом открытии страницы), блок ниже не отобразится.  
+        */}}
+       
         {{if .Result}}
         <div class="result">
             <h3>Результат расчета:</h3>
+            <!-- <pre> сохраняет форматирование текста (переносы строк, пробелы), 
+            которые придут из переменной .Result  -->
             <pre>{{.Result}}</pre>
         </div>
         {{end}}

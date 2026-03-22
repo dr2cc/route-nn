@@ -7,6 +7,7 @@ import (
 	"route-nn/internal/client"
 	"route-nn/internal/config"
 	"route-nn/internal/delivery/html"
+	"time"
 )
 
 // // Вшиваем папку templates прямо в бинарник.
@@ -17,26 +18,24 @@ import (
 
 // Структура для передачи данных в HTML-шаблон
 type PageData struct {
-	Result string
+	Result      string
+	CurrentDate string // дата по умолчанию
 }
 
-// Run #3 with
+// Run #3
 func Run(cfg *config.Config) error {
 	apiClient := client.NewClient(cfg)
 
 	tmpl := template.Must(template.ParseFS(html.Files, "templates/index.html"))
 
-	// // Используем ParseFS вместо ParseFiles
-	// tmpl, err := template.ParseFS(templateFS, "templates/index.html")
-	// if err != nil {
-	// 	return fmt.Errorf("ошибка загрузки вшитого шаблона: %w", err)
-	// }
-
-	// tmpl := template.Must(template.ParseFiles("templates/index.html"))
-
 	// 1. Отображение главной страницы
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.Execute(w, nil)
+		// Передаем структуру с текущей датой, чтобы input не был пустым
+		data := PageData{
+			CurrentDate: time.Now().Format("2006-01-02"),
+		}
+		tmpl.Execute(w, data)
+		// tmpl.Execute(w, nil)
 	})
 
 	// 2. Обработка кнопки "Рассчитать"
@@ -51,7 +50,7 @@ func Run(cfg *config.Config) error {
 		code2 := r.FormValue("code2")
 		date := r.FormValue("date")
 
-		// Делаем запрос к 1C (используем ваш существующий метод)
+		// Делаем запрос к 1C (используем существующий метод)
 		var apiData map[string]interface{}
 		// Здесь можно модифицировать URL или параметры под запрос к 1C
 		if err := apiClient.GetJSON(cfg.Url, &apiData); err != nil {
@@ -64,8 +63,13 @@ func Run(cfg *config.Config) error {
 		calcRes := fmt.Sprintf("Обработано для %s и %s на дату %s\nДанные 1С: %v",
 			code1, code2, date, apiData)
 
-		// Возвращаем результат на экран
-		tmpl.Execute(w, PageData{Result: calcRes})
+		// Передаем результат и выбранную дату обратно,
+		// чтобы форма не сбрасывалась к "сегодняшнему" числу после расчета
+		tmpl.Execute(w, PageData{
+			Result:      calcRes,
+			CurrentDate: date,
+		})
+		// tmpl.Execute(w, PageData{Result: calcRes})
 	})
 
 	fmt.Println("Сервер запущен на http://localhost:8080")
