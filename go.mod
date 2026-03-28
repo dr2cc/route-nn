@@ -1,6 +1,6 @@
 module route-nn
 
-go 1.24.9
+go 1.26.1
 
 require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
